@@ -16,9 +16,7 @@ const app =  express()
 // Update your middleware section to this exact order:
 app.use(helmet());
 // CORS configuration
-const corsOptions: cors.CorsOptions = {
-  origin: '*'
-};
+const corsOptions: cors.CorsOptions = { origin: '*'};
 
 app.use(cors(corsOptions));
 
