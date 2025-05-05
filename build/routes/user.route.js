@@ -1,0 +1,22 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = __importDefault(require("express"));
+const router = express_1.default.Router();
+const user_controller_1 = require("../controllers/user.controller");
+const authentication_middleware_1 = __importDefault(require("../middlewares/authentication.middleware"));
+const enums_1 = require("../types/enums");
+const upload_middleware_1 = require("../middlewares/upload.middleware");
+const multer_1 = __importDefault(require("multer"));
+const upload = (0, multer_1.default)();
+const cloudUpload = (0, upload_middleware_1.cloudinaryUploader)();
+router.post('/register', cloudUpload.single('profile'), user_controller_1.register);
+router.post('/login', user_controller_1.login);
+router.post('/admin/login', user_controller_1.adminLogin);
+router.put('/update/:id', (0, authentication_middleware_1.default)([enums_1.Roles.User]), cloudUpload.single('profile'), user_controller_1.updateProfile);
+router.get('/', (0, authentication_middleware_1.default)([enums_1.Roles.Admin]), user_controller_1.getAllUsers);
+router.delete('/:id', (0, authentication_middleware_1.default)([enums_1.Roles.Admin]), user_controller_1.removeUser);
+router.get('/profile', (0, authentication_middleware_1.default)([enums_1.Roles.User]), user_controller_1.profile);
+exports.default = router;
