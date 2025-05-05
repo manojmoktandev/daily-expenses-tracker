@@ -1,4 +1,5 @@
-require("dotenv").config()
+import * as dotenv from 'dotenv';
+dotenv.config();
 import express, { Request, Response, NextFunction } from "express"
 import helmet from "helmet"
 import cors from "cors"
@@ -14,7 +15,12 @@ import {status as httpStatus} from "http-status"
 const app =  express()
 // Update your middleware section to this exact order:
 app.use(helmet());
-app.use(cors({ origin: '*' }));
+// CORS configuration
+const corsOptions: cors.CorsOptions = {
+  origin: '*'
+};
+
+app.use(cors(corsOptions));
 
 // Body parsers - CRITICAL ORDER
 app.use(express.json()); // Handle JSON data
@@ -22,6 +28,9 @@ app.use(express.urlencoded({ extended: true })); // Handle form data
 
 
 // routes
+app.get('/',(req:Request,res:Response)=>{
+  res.send('Server is up and running')
+})
 app.use('/api/user',userRoutes)
 app.use('/api/category',CategoryRoutes)
 app.use('/api/expense',ExpenseRoutes)
