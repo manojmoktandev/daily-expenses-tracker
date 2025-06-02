@@ -14,4 +14,5 @@ export interface IJwtPayload {
     public_id?: string;
     original_name?: string;
   }>;
+  expense:string;
 }

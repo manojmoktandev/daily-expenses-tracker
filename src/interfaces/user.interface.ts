@@ -36,6 +36,11 @@ export interface IUserResponse extends Omit<IUserBase, 'password'> {
   _id: string;
   createdAt?: Date;
   updatedAt?: Date;
-
 }
+
+export interface UserWithExpense extends IUserBase  {
+  expense: {
+    total_expense: number;
+  };
+};
 

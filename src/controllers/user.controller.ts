@@ -11,6 +11,8 @@ import { IJwtPayload } from "../interfaces/jwt-payload.interface";
 import { Types } from "mongoose";
 import { EmailService } from "../services/email.service";
 import { smtpConfig } from '../config/smtp.config';
+import Expense from "../models/expense.model";
+import { UserWithExpense } from "../interfaces/user.interface";
 
 
 export const register = asyncHandler(async(req: Request, res: Response)=>{
@@ -54,9 +56,13 @@ export const login = asyncHandler(async(req: Request, res: Response)=>{
     if(!email || !password){
         throw new ApiError('Field is required',httpStatus.BAD_REQUEST)
     }
-    const user  =  await User.findOne({email})
-  
+    const user = await User.findOne({ email })
+   
     if(user){
+        const userExpenses = await Expense.aggregate([
+                {  $match: { createdBy: user._id } },
+                {  $group: {  _id: null, totalAmount: { $sum: "$amount" } } }
+                ]);
         const verifyPassword =  await user.comparePassword(password)
         //const verifyPassword =  await compare(user.password,password)
         if(verifyPassword){
@@ -70,9 +76,10 @@ export const login = asyncHandler(async(req: Request, res: Response)=>{
                     path: p.path,
                     public_id: p.public_id,
                     original_name: p.original_name
-                }))
+                })),
+                expense:userExpenses[0]?.['totalAmount']
             }
-            const token = generateJwtToken(payload)
+            const token = generateJwtToken(payload);
             res.status(httpStatus.ACCEPTED).json({
                 message:'User login succesfully',
                 status:'success',

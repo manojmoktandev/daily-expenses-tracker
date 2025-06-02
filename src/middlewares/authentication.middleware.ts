@@ -10,11 +10,12 @@ export const Authentication = (roles?:Roles[])=>{
         try{
             
             // get authorization header
-                const auth_header =  req.headers['authorization']
+            const auth_header =  req.headers['authorization']
                 if(!auth_header){
                     throw new ApiError('Authorization header is missing',HttpStatus.UNAUTHORIZED)
                 }
                 if(!auth_header.startsWith('Bearer')){
+                    console.log('dadadda')
                     throw new ApiError('Unauthorized access denied',HttpStatus.UNAUTHORIZED)
                 }
                 const token  = auth_header.split(" ")[1];

@@ -7,7 +7,7 @@ import Category from "../models/category.model";
 
 
 export const create =  asyncHandler(async(req:Request, res:Response)=>{
-    const {name} =  req.body
+    const {name,description} =  req.body
     const userId =  req.user._id
     if(!name){
         throw new ApiError('Category name is required',HttpStatus.BAD_REQUEST)
@@ -20,7 +20,7 @@ export const create =  asyncHandler(async(req:Request, res:Response)=>{
         throw new ApiError('User Not found',HttpStatus.BAD_REQUEST)
     }
 
-    const category =  await Category.create({name,user:user._id})
+    const category =  await Category.create({name,description,user:user._id})
     if(category){
         res.status(HttpStatus.CREATED).json({
             message:'Category created',

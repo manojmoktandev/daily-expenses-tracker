@@ -3,6 +3,7 @@ import { config } from '../config/config'
 import { Roles } from '../types/enums'
 //import { IPayload } from '../types/global.types'
 import { IJwtPayload } from '../interfaces/jwt-payload.interface'
+import { Console } from 'console';
 
 const jwtSecret =  config.jwt.secret ?? '';
 const jwtExpires = config.jwt.accessExpirationMinutes as any
