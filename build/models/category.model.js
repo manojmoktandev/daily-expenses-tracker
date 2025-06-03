@@ -6,9 +6,12 @@ const CategorySchema = new mongoose_1.Schema({
         type: String,
         required: [true, 'category name is required']
     },
+    description: {
+        type: String
+    },
     user: {
         type: mongoose_1.Schema.Types.ObjectId,
-        ref: 'user',
+        ref: 'User',
         required: [true, 'user is required']
     }
 }, {

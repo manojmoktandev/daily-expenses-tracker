@@ -29,8 +29,8 @@ const toJSON = (schema) => {
             ret.id = ret._id.toString();
             delete ret._id;
             delete ret.__v;
-            delete ret.createdAt;
-            delete ret.updatedAt;
+            // delete ret.createdAt;
+            //delete ret.updatedAt;
             return (_a = transform === null || transform === void 0 ? void 0 : transform(doc, ret, options)) !== null && _a !== void 0 ? _a : ret;
         },
     });

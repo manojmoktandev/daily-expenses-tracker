@@ -34,6 +34,7 @@ const enums_1 = require("../types/enums");
 const cloudinary_util_1 = require("../utils/cloudinary.util");
 const email_service_1 = require("../services/email.service");
 const smtp_config_1 = require("../config/smtp.config");
+const expense_model_1 = __importDefault(require("../models/expense.model"));
 exports.register = (0, async_handler_util_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const _a = req.body, { role } = _a, data = __rest(_a, ["role"]);
     const profileImage = req.file;
@@ -70,12 +71,18 @@ exports.register = (0, async_handler_util_1.default)((req, res) => __awaiter(voi
     });
 }));
 exports.login = (0, async_handler_util_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
     const { email, password } = req.body;
     if (!email || !password) {
         throw new error_handler_middleware_1.default('Field is required', http_status_1.status.BAD_REQUEST);
     }
     const user = yield user_model_1.default.findOne({ email });
     if (user) {
+        const userExpenses = yield expense_model_1.default.aggregate([
+            { $match: { createdBy: user._id } },
+            { $group: { _id: null, totalAmount: { $sum: "$amount" } } }
+        ]);
+        console.log(userExpenses);
         const verifyPassword = yield user.comparePassword(password);
         //const verifyPassword =  await compare(user.password,password)
         if (verifyPassword) {
@@ -89,7 +96,8 @@ exports.login = (0, async_handler_util_1.default)((req, res) => __awaiter(void 0
                     path: p.path,
                     public_id: p.public_id,
                     original_name: p.original_name
-                }))
+                })),
+                expense: (_a = userExpenses[0]) === null || _a === void 0 ? void 0 : _a['totalAmount']
             };
             const token = (0, jwt_util_1.generateJwtToken)(payload);
             res.status(http_status_1.status.ACCEPTED).json({

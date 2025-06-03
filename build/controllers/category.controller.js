@@ -19,7 +19,7 @@ const http_status_1 = require("http-status");
 const user_model_1 = __importDefault(require("../models/user.model"));
 const category_model_1 = __importDefault(require("../models/category.model"));
 exports.create = (0, async_handler_util_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { name } = req.body;
+    const { name, description } = req.body;
     const userId = req.user._id;
     if (!name) {
         throw new error_handler_middleware_1.default('Category name is required', http_status_1.status.BAD_REQUEST);
@@ -31,7 +31,7 @@ exports.create = (0, async_handler_util_1.default)((req, res) => __awaiter(void 
     if (!user) {
         throw new error_handler_middleware_1.default('User Not found', http_status_1.status.BAD_REQUEST);
     }
-    const category = yield category_model_1.default.create({ name, user: user._id });
+    const category = yield category_model_1.default.create({ name, description, user: user._id });
     if (category) {
         res.status(http_status_1.status.CREATED).json({
             message: 'Category created',

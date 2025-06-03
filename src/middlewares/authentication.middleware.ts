@@ -35,6 +35,7 @@ export const Authentication = (roles?:Roles[])=>{
                 const user = await User.findById(payload._id);
                 
                 if(!user){
+                    console.log('ass')
                     throw new ApiError('Unauthorized, access denied',HttpStatus.UNAUTHORIZED)
                 }
                 if(roles && !roles.includes(Roles['Admin'])){

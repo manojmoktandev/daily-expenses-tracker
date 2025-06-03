@@ -27,6 +27,7 @@ const Authentication = (roles) => {
                 throw new error_handler_middleware_1.default('Authorization header is missing', http_status_1.status.UNAUTHORIZED);
             }
             if (!auth_header.startsWith('Bearer')) {
+                console.log('dadadda');
                 throw new error_handler_middleware_1.default('Unauthorized access denied', http_status_1.status.UNAUTHORIZED);
             }
             const token = auth_header.split(" ")[1];
@@ -41,6 +42,7 @@ const Authentication = (roles) => {
             // search user from payload
             const user = yield user_model_1.default.findById(payload._id);
             if (!user) {
+                console.log('ass');
                 throw new error_handler_middleware_1.default('Unauthorized, access denied', http_status_1.status.UNAUTHORIZED);
             }
             if (roles && !roles.includes(enums_1.Roles['Admin'])) {
