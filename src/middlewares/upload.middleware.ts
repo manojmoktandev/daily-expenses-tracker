@@ -18,6 +18,7 @@ export const uploader = (folderName?:string)=>{
           cb(null, file.fieldname + '_' + uniqueSuffix +'_'+ file.originalname)
         }
     })
+    console.log(storage);
     return multer({storage})
 }
 

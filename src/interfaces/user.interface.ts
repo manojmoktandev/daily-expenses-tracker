@@ -14,6 +14,8 @@ export interface IUserBase {
     original_name?: string;
   }>;
   isEmailVerified:boolean;
+  createdAt:string;
+  updatedAt:string;
 }
 
 // Mongoose document extends base interface + adds Mongoose methods
@@ -34,8 +36,6 @@ export interface IUserModel extends Model<IUserDocument, {}, IUserMethods> {
 // Additional interface for API responses
 export interface IUserResponse extends Omit<IUserBase, 'password'> {
   _id: string;
-  createdAt?: Date;
-  updatedAt?: Date;
 }
 
 export interface UserWithExpense extends IUserBase  {

@@ -62,7 +62,7 @@ export const update = asyncHandler(async(req:Request, res:Response)=>{
 })
 
 export const getAllCategories = asyncHandler(async(req:Request,res:Response,next:NextFunction)=>{
-  const category =  await Category.find()
+  const category =   await Category.find()
   res.status(HttpStatus.OK).json({
     message:'Category List',
     data:category,
@@ -89,7 +89,7 @@ export const getById =  asyncHandler(async(req:Request,res:Response,next:NextFun
     if(!id){
         throw  new ApiError('Category id is required',HttpStatus.BAD_REQUEST)
     }
-    const category =  await Category.findOne({_id:id, user:userId})
+    const category =  await Category.findOne({_id:id, user:userId}).populate('user')
     if(!category){
         throw  new ApiError('Category List not Found',HttpStatus.BAD_REQUEST)
     }
@@ -105,7 +105,7 @@ export const remove =  asyncHandler(async(req:Request,res:Response,next:NextFunc
     const {id}  =   req.params
     const userId =  req.user._id
     const category =  await Category.findOneAndDelete({_id:id,user:userId});
-    if(category){
+    if(!category){
         throw new ApiError('Category Delete Failed',HttpStatus.BAD_REQUEST)
     }
     res.status(HttpStatus.OK).json({
@@ -114,6 +114,4 @@ export const remove =  asyncHandler(async(req:Request,res:Response,next:NextFunc
         success:true,
         status:'success'
     })
-
-    
 })

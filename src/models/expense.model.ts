@@ -1,4 +1,6 @@
 import { model, Schema, Types } from "mongoose";
+import { paginate,toJSON } from "./plugins";
+
 const date =  new Date().toISOString().split('T')[0]
 const expenseSchema =  new Schema({
     title:{
@@ -23,7 +25,7 @@ const expenseSchema =  new Schema({
         required:[true,'Category is required'],
         ref:'category'
     },
-    receipt:[
+    receipts:[
         {
             path:{
                 type:String
@@ -35,9 +37,16 @@ const expenseSchema =  new Schema({
                 type:String
             }
         }
-    ]
+    ],
+    description:{
+        type:String
+    }
 
 },{timestamps:true})
+
+// add plugin that converts mongoose to json
+expenseSchema.plugin(toJSON);
+expenseSchema.plugin(paginate);
 
 const Expense =  model('expense',expenseSchema)
 export default Expense

@@ -109,7 +109,7 @@ exports.remove = (0, async_handler_util_1.default)((req, res, next) => __awaiter
     const { id } = req.params;
     const userId = req.user._id;
     const category = yield category_model_1.default.findOneAndDelete({ _id: id, user: userId });
-    if (category) {
+    if (!category) {
         throw new error_handler_middleware_1.default('Category Delete Failed', http_status_1.status.BAD_REQUEST);
     }
     res.status(http_status_1.status.OK).json({

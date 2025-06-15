@@ -63,7 +63,10 @@ export const login = asyncHandler(async(req: Request, res: Response)=>{
                 {  $match: { createdBy: user._id } },
                 {  $group: {  _id: null, totalAmount: { $sum: "$amount" } } }
                 ]);
+        
         const verifyPassword =  await user.comparePassword(password)
+        const totalExpense = userExpenses[0]?.totalAmount || 0;
+
         //const verifyPassword =  await compare(user.password,password)
         if(verifyPassword){
             const payload: IJwtPayload = {
@@ -72,12 +75,13 @@ export const login = asyncHandler(async(req: Request, res: Response)=>{
                 fullname:user.fullname,
                 username:user.username,
                 role:user.role,
+                createdAt:user.createdAt,
                 profile: user.profile.map(p => ({
                     path: p.path,
                     public_id: p.public_id,
                     original_name: p.original_name
                 })),
-                expense:userExpenses[0]?.['totalAmount']
+                
             }
             const token = generateJwtToken(payload);
             res.status(httpStatus.ACCEPTED).json({
@@ -113,12 +117,13 @@ export const adminLogin = asyncHandler(async(req: Request, res: Response)=>{
         const verifyPassword = await  user.comparePassword(password)
         if(verifyPassword){
             const payload:IJwtPayload = {
-                _id:user!._id as Types.ObjectId,
-                email:user!.email,
-                fullname:user!.fullname,
-                username:user!.username,
-                role:user!.role,
-                profile: user!.profile.map(p => ({
+                _id:user._id as Types.ObjectId,
+                email:user.email,
+                fullname:user.fullname,
+                username:user.username,
+                role:user.role,
+                createdAt:user.createdAt,
+                profile: user?.profile.map(p => ({
                     path: p.path,
                     public_id: p.public_id,
                     original_name: p.original_name

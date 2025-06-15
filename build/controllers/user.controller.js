@@ -82,8 +82,8 @@ exports.login = (0, async_handler_util_1.default)((req, res) => __awaiter(void 0
             { $match: { createdBy: user._id } },
             { $group: { _id: null, totalAmount: { $sum: "$amount" } } }
         ]);
-        console.log(userExpenses);
         const verifyPassword = yield user.comparePassword(password);
+        const totalExpense = ((_a = userExpenses[0]) === null || _a === void 0 ? void 0 : _a.totalAmount) || 0;
         //const verifyPassword =  await compare(user.password,password)
         if (verifyPassword) {
             const payload = {
@@ -92,12 +92,12 @@ exports.login = (0, async_handler_util_1.default)((req, res) => __awaiter(void 0
                 fullname: user.fullname,
                 username: user.username,
                 role: user.role,
+                createdAt: user.createdAt,
                 profile: user.profile.map(p => ({
                     path: p.path,
                     public_id: p.public_id,
                     original_name: p.original_name
                 })),
-                expense: (_a = userExpenses[0]) === null || _a === void 0 ? void 0 : _a['totalAmount']
             };
             const token = (0, jwt_util_1.generateJwtToken)(payload);
             res.status(http_status_1.status.ACCEPTED).json({
@@ -135,7 +135,8 @@ exports.adminLogin = (0, async_handler_util_1.default)((req, res) => __awaiter(v
                 fullname: user.fullname,
                 username: user.username,
                 role: user.role,
-                profile: user.profile.map(p => ({
+                createdAt: user.createdAt,
+                profile: user === null || user === void 0 ? void 0 : user.profile.map(p => ({
                     path: p.path,
                     public_id: p.public_id,
                     original_name: p.original_name

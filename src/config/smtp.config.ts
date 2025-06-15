@@ -10,6 +10,6 @@ export const smtpConfig: smtpI = {
     },
     // Optional TLS settings
     tls: {
-      rejectUnauthorized: process.env.NODE_ENV !== 'production'
+      rejectUnauthorized: process.env.APP_ENV !== 'production'
     }
   };

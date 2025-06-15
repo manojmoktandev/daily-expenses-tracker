@@ -22,7 +22,7 @@ export const create =  asyncHandler(async(req:Request,res:Response)=>{
     expenseModel.category = categoryData._id
     if(receiptFile && receiptFile.length>0 ){
         receiptFile.forEach(file => {
-            expenseModel.receipt.push(
+            expenseModel.receipts.push(
                     {
                         'path':file.path,
                         'public_id':file.filename,
@@ -61,7 +61,7 @@ export const update = asyncHandler(async(req:Request, res:Response)=>{
         expenseRec.category =  category
         if(receiptFile && receiptFile.length>0 ){
             receiptFile.forEach(file => {
-                    expenseRec.receipt.push({
+                    expenseRec.receipts.push({
                         'path':file.path,
                         'public_id':file.filename,
                         'original_name':file.originalname
@@ -71,10 +71,10 @@ export const update = asyncHandler(async(req:Request, res:Response)=>{
       
         if(deletedReceipts && deletedReceipts.length>0){
             const fileToDelete:string[] = JSON.parse(deletedReceipts)
-            const receiptsToRemove = expenseRec.receipt.filter(
-                receipt => !fileToDelete.includes(String(receipt.public_id))
+            const receiptsToRemove = expenseRec.receipts.filter(
+                receipts => !fileToDelete.includes(String(receipts.public_id))
             );
-            expenseRec.set('receipt',receiptsToRemove)
+            expenseRec.set('receipts',receiptsToRemove)
 
             // const receiptsToRemove = expenseRec.receipt.filter(
             //     receipt => fileToDelete.includes(String(receipt.public_id))
@@ -105,11 +105,14 @@ export const remove =  asyncHandler(async(req:Request,res:Response)=>{
     if(!expenseRec){
          throw new ApiError('Failed to delete Expense Record',HttpStatus.BAD_REQUEST)
     }
-    if(expenseRec.receipt && expenseRec.receipt.length>0){
-        const fileToDelete:string[] = expenseRec.receipt.map(receipt=>String(receipt.public_id)) 
+    if(expenseRec.receipts && expenseRec.receipts.length>0){
+        const fileToDelete:string[] = expenseRec.receipts.map(receipts=>String(receipts.public_id)) 
         await deleteFiles(fileToDelete)
     }
-    await Expense.findByIdAndDelete(id);
+    const deleteRec = await Expense.findByIdAndDelete(id);
+    if(!deleteRec){
+        throw new ApiError('Expense Record Delete Failed',HttpStatus.BAD_REQUEST)
+    }
     res.status(HttpStatus.OK).json({
         message:'Expense Record Deleted successfully',
         data:{},
@@ -138,7 +141,7 @@ export const getById =  asyncHandler(async(req:Request,res:Response)=>{
 
 export const getAllUserWise =  asyncHandler(async(req:Request,res:Response)=>{
     const userId =  req.user._id
-    const expense =  await Expense.find({createdBy:userId})
+    const expense =  await Expense.find({createdBy:userId}).populate('category').sort({"createdAt":-1})
     res.status(HttpStatus.OK).json({
         message:'Logged in user wise List',
         data:expense,

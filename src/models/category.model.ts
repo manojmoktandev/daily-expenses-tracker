@@ -1,4 +1,5 @@
 import { model, Schema, Types } from "mongoose";
+import { paginate,toJSON } from "./plugins";
 
 const CategorySchema = new Schema({
     name:{
@@ -10,12 +11,16 @@ const CategorySchema = new Schema({
     },
     user:{
         type:Schema.Types.ObjectId,
-        ref:'User',
+        ref:'user',
         required:[true,'user is required']
     }
 },{
     timestamps:true
 })
+
+// add plugin that converts mongoose to json
+CategorySchema.plugin(toJSON);
+CategorySchema.plugin(paginate);
 
 const Category =  model('category',CategorySchema)
 export default Category;

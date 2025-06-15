@@ -122,7 +122,10 @@ exports.remove = (0, async_handler_util_1.default)((req, res) => __awaiter(void 
         const fileToDelete = expenseRec.receipt.map(receipt => String(receipt.public_id));
         yield (0, cloudinary_util_1.deleteFiles)(fileToDelete);
     }
-    yield expense_model_1.default.findByIdAndDelete(id);
+    const deleteRec = yield expense_model_1.default.findByIdAndDelete(id);
+    if (!deleteRec) {
+        throw new error_handler_middleware_1.default('Expense Record Delete Failed', http_status_1.status.BAD_REQUEST);
+    }
     res.status(http_status_1.status.OK).json({
         message: 'Expense Record Deleted successfully',
         data: {},
@@ -149,7 +152,7 @@ exports.getById = (0, async_handler_util_1.default)((req, res) => __awaiter(void
 }));
 exports.getAllUserWise = (0, async_handler_util_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const userId = req.user._id;
-    const expense = yield expense_model_1.default.find({ createdBy: userId });
+    const expense = yield expense_model_1.default.find({ createdBy: userId }).populate('category').sort({ "createdBy": -1 });
     res.status(http_status_1.status.OK).json({
         message: 'Logged in user wise List',
         data: expense,
