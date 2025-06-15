@@ -12,7 +12,7 @@ const CategorySchema = new mongoose_1.Schema({
     },
     user: {
         type: mongoose_1.Schema.Types.ObjectId,
-        ref: 'User',
+        ref: 'user',
         required: [true, 'user is required']
     }
 }, {

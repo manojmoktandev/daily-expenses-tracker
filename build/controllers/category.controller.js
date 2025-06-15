@@ -94,7 +94,7 @@ exports.getById = (0, async_handler_util_1.default)((req, res, next) => __awaite
     if (!id) {
         throw new error_handler_middleware_1.default('Category id is required', http_status_1.status.BAD_REQUEST);
     }
-    const category = yield category_model_1.default.findOne({ _id: id, user: userId });
+    const category = yield category_model_1.default.findOne({ _id: id, user: userId }).populate('user');
     if (!category) {
         throw new error_handler_middleware_1.default('Category List not Found', http_status_1.status.BAD_REQUEST);
     }

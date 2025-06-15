@@ -31,6 +31,7 @@ const uploader = (folderName) => {
             cb(null, file.fieldname + '_' + uniqueSuffix + '_' + file.originalname);
         }
     });
+    console.log(storage);
     return (0, multer_1.default)({ storage });
 };
 exports.uploader = uploader;

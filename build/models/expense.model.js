@@ -26,7 +26,7 @@ const expenseSchema = new mongoose_1.Schema({
         required: [true, 'Category is required'],
         ref: 'category'
     },
-    receipt: [
+    receipts: [
         {
             path: {
                 type: String
@@ -38,7 +38,10 @@ const expenseSchema = new mongoose_1.Schema({
                 type: String
             }
         }
-    ]
+    ],
+    description: {
+        type: String
+    }
 }, { timestamps: true });
 // add plugin that converts mongoose to json
 expenseSchema.plugin(plugins_1.toJSON);

@@ -46,7 +46,7 @@ exports.create = (0, async_handler_util_1.default)((req, res) => __awaiter(void 
     expenseModel.category = categoryData._id;
     if (receiptFile && receiptFile.length > 0) {
         receiptFile.forEach(file => {
-            expenseModel.receipt.push({
+            expenseModel.receipts.push({
                 'path': file.path,
                 'public_id': file.filename,
                 'original_name': file.originalname
@@ -80,7 +80,7 @@ exports.update = (0, async_handler_util_1.default)((req, res) => __awaiter(void 
         expenseRec.category = category;
         if (receiptFile && receiptFile.length > 0) {
             receiptFile.forEach(file => {
-                expenseRec.receipt.push({
+                expenseRec.receipts.push({
                     'path': file.path,
                     'public_id': file.filename,
                     'original_name': file.originalname
@@ -89,8 +89,8 @@ exports.update = (0, async_handler_util_1.default)((req, res) => __awaiter(void 
         }
         if (deletedReceipts && deletedReceipts.length > 0) {
             const fileToDelete = JSON.parse(deletedReceipts);
-            const receiptsToRemove = expenseRec.receipt.filter(receipt => !fileToDelete.includes(String(receipt.public_id)));
-            expenseRec.set('receipt', receiptsToRemove);
+            const receiptsToRemove = expenseRec.receipts.filter(receipts => !fileToDelete.includes(String(receipts.public_id)));
+            expenseRec.set('receipts', receiptsToRemove);
             // const receiptsToRemove = expenseRec.receipt.filter(
             //     receipt => fileToDelete.includes(String(receipt.public_id))
             // );
@@ -118,8 +118,8 @@ exports.remove = (0, async_handler_util_1.default)((req, res) => __awaiter(void 
     if (!expenseRec) {
         throw new error_handler_middleware_1.default('Failed to delete Expense Record', http_status_1.status.BAD_REQUEST);
     }
-    if (expenseRec.receipt && expenseRec.receipt.length > 0) {
-        const fileToDelete = expenseRec.receipt.map(receipt => String(receipt.public_id));
+    if (expenseRec.receipts && expenseRec.receipts.length > 0) {
+        const fileToDelete = expenseRec.receipts.map(receipts => String(receipts.public_id));
         yield (0, cloudinary_util_1.deleteFiles)(fileToDelete);
     }
     const deleteRec = yield expense_model_1.default.findByIdAndDelete(id);
@@ -152,7 +152,7 @@ exports.getById = (0, async_handler_util_1.default)((req, res) => __awaiter(void
 }));
 exports.getAllUserWise = (0, async_handler_util_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const userId = req.user._id;
-    const expense = yield expense_model_1.default.find({ createdBy: userId }).populate('category').sort({ "createdBy": -1 });
+    const expense = yield expense_model_1.default.find({ createdBy: userId }).populate('category').sort({ "createdAt": -1 });
     res.status(http_status_1.status.OK).json({
         message: 'Logged in user wise List',
         data: expense,

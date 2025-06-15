@@ -11,7 +11,7 @@ const authentication_middleware_1 = __importDefault(require("../middlewares/auth
 router.get('/getall', (0, authentication_middleware_1.default)([enums_1.Roles.Admin]), category_controller_1.getAllCategories);
 router.get('/getall/user', (0, authentication_middleware_1.default)([enums_1.Roles.User]), category_controller_1.getAllUserWise);
 router.post('/create', (0, authentication_middleware_1.default)([enums_1.Roles.User]), category_controller_1.create);
-router.post('/update/:id', (0, authentication_middleware_1.default)([enums_1.Roles.User]), category_controller_1.update);
+router.put('/update/:id', (0, authentication_middleware_1.default)([enums_1.Roles.User]), category_controller_1.update);
 router.get('/:id', (0, authentication_middleware_1.default)([enums_1.Roles.User]), category_controller_1.getById);
 router.delete('/:id', (0, authentication_middleware_1.default)([enums_1.Roles.User]), category_controller_1.remove);
 exports.default = router;
